@@ -31,7 +31,7 @@ namespace ConsoleClient.ViewModel
             _server.connectedEvent += UserConnected;
             _server.msgRecievedEvent += MessageRecieved;
             _server.userDisonnectEvent += RemoveUser;
-            _server.ConnectToServer(Username);
+            _server.ConnectToServer(name);
 
             _server.SendMessageToServer(Message);
         }
