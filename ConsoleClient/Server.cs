@@ -1,4 +1,4 @@
-﻿using ChatClient.Net.IO;
+﻿using ConsoleClient.Net.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

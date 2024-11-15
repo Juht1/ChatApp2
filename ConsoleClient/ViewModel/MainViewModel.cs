@@ -1,5 +1,5 @@
 ﻿using ChatClient.Net;
-using ConsoleClient.MVVM.Model;
+using ConsoleClient.Model;
 using ConsoleClient.Net;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace ConsoleClient.ViewModel
 
         private Server _server;
 
-        public MainViewModel() 
+        public MainViewModel(string? name) 
         {
             Users = new ObservableCollection<UserModel>();
             Messages = new ObservableCollection<string>();
@@ -31,9 +31,9 @@ namespace ConsoleClient.ViewModel
             _server.connectedEvent += UserConnected;
             _server.msgRecievedEvent += MessageRecieved;
             _server.userDisonnectEvent += RemoveUser;
-            //ConnectToServerCommand = new RelayCommand(o => _server.ConnectToServer(Username), o => !string.IsNullOrEmpty(Username));
+            _server.ConnectToServer(Username);
 
-            //SendMessageCommand = new RelayCommand(o => _server.SendMessageToServer(Message), o => !string.IsNullOrEmpty(Message));
+            _server.SendMessageToServer(Message);
         }
 
         private void RemoveUser()
@@ -41,15 +41,15 @@ namespace ConsoleClient.ViewModel
             var uid = _server.PacketReader.ReadMessage();
             var user = Users.Where(x => x.UID == uid).FirstOrDefault();
 
-            Console.WriteLine($"{user} has been removed");
+            Console.WriteLine($"{user.UserName} has been removed");
             //Application.Current.Dispatcher.Invoke(() => Users.Remove(user));
         }
 
         private void MessageRecieved()
         {
             var msg = _server.PacketReader.ReadMessage();
+            Messages.Add(msg);
             Console.WriteLine(msg);
-
             //Application.Current.Dispatcher.Invoke(() => Messages.Add(msg));
         }
 
