@@ -1,12 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿# Use the official .NET SDK image for building
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
 
-namespace ChatServer
-{
-    internal class DockerFile
-    {
-    }
-}
+# Copy the project file and restore dependencies
+COPY ["ChatServer/ChatServer.csproj", "ChatServer/"]
+RUN dotnet restore "ChatServer/ChatServer.csproj"
+
+# Copy the entire project
+COPY . .
+WORKDIR "/src/ChatServer"
+
+# Build the project
+RUN dotnet build "ChatServer.csproj" -c Release -o /app/build
+
+# Publish the project
+FROM build AS publish
+RUN dotnet publish "ChatServer.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Final stage - use runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ChatServer.dll"]# Use the official .NET SDK image for building
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy the project file and restore dependencies
+COPY ["ChatServer/ChatServer.csproj", "ChatServer/"]
+RUN dotnet restore "ChatServer/ChatServer.csproj"
+
+# Copy the entire project
+COPY . .
+WORKDIR "/src/ChatServer"
+
+# Build the project
+RUN dotnet build "ChatServer.csproj" -c Release -o /app/build
+
+# Publish the project
+FROM build AS publish
+RUN dotnet publish "ChatServer.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Final stage - use runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ChatServer.dll"]
