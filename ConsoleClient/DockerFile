@@ -1,23 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-
-# Copy project file and restore dependencies
-COPY ["ConsoleClient/ConsoleClient.csproj", "ConsoleClient/"]
-RUN dotnet restore "ConsoleClient/ConsoleClient.csproj"
-
-# Copy entire project
-COPY . .
-WORKDIR "/src/ConsoleClient"
-
-# Build the project
-RUN dotnet build "ConsoleClient.csproj" -c Release -o /app/build
-
-# Publish the project
-FROM build AS publish
-RUN dotnet publish "ConsoleClient.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-# Final stage - use console runtime
-FROM mcr.microsoft.com/dotnet/runtime:8.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY ConsoleClient.csproj ./
+RUN dotnet restore ConsoleClient.csproj
+COPY . ./
+RUN dotnet publish ConsoleClient.csproj -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/runtime:8.0
+WORKDIR /app
+COPY --from=build /app/out ./
+EXPOSE 7891
 ENTRYPOINT ["dotnet", "ConsoleClient.dll"]

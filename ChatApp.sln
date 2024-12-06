@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatServer", "ChatServer\Ch
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleClient", "ConsoleClient\ConsoleClient.csproj", "{014E92B3-8CE0-4B61-A605-D8096966FC09}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4019E687-4A13-452A-BC5A-185A68622BDA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{75D4BC3A-6C13-442E-99D2-53ECE240BB11}"
 	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Global

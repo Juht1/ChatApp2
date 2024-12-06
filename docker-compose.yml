@@ -1,12 +1,33 @@
 version: '3.8'
+
 services:
   chatserver:
     build:
-      context: .
-      dockerfile: ./ChatServer/Dockerfile  # Use explicit relative path
+      context: ./ChatServer
+      dockerfile: Dockerfile
     ports:
-      - "5000:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
+      - "7891:7891"
+    networks:
+      - chat-network
+    container_name: chatserver  
 
+  consoleclient: 
+    build:
+      context: ./ConsoleClient
+      dockerfile: Dockerfile
+    ports:
+      - "7892:7891"
+    networks:
+      - chat-network
+    depends_on:
+      - chatserver
+    stdin_open: true
+    tty: true
+    environment:
+      - USER_ID=user_1
+    restart: unless-stopped
+    container_name: consoleclient 
+
+networks:
+  chat-network:
+    driver: bridge
