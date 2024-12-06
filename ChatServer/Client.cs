@@ -1,4 +1,4 @@
-﻿using ChatClient.Net.IO;
+﻿using ChatServer.Net.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatClient
+namespace ChatServer
 {
     class Client
     {

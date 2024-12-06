@@ -32,22 +32,14 @@ namespace ConsoleClient.ViewModel
                 return;
             }
 
-            Username = name; // Store the username
-        }
-
-        // Synchronous method to connect to the server
-        public bool ConnectToServer()
-        {
             try
             {
-                _server.ConnectToServer(Username);
+                _server.ConnectToServer(name);
                 Console.WriteLine("Connected to server.");
-                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error connecting to server: {ex.Message}");
-                return false;
             }
         }
 
@@ -59,6 +51,7 @@ namespace ConsoleClient.ViewModel
             if (user != null)
             {
                 Console.WriteLine($"{user.UserName} has been removed");
+                // Application.Current.Dispatcher.Invoke(() => Users.Remove(user));
             }
         }
 
@@ -69,6 +62,7 @@ namespace ConsoleClient.ViewModel
             {
                 Messages.Add(message);
                 Console.WriteLine($"Received: {message}");
+                // Application.Current.Dispatcher.Invoke(() => Messages.Add(message));
             }
         }
 
@@ -84,10 +78,9 @@ namespace ConsoleClient.ViewModel
             {
                 Users.Add(user);
                 Console.WriteLine($"{user.UserName} has connected.");
+                // Application.Current.Dispatcher.Invoke(() => Users.Add(user));
             }
         }
-
-        // Synchronous method to send a message to the server
         public void SendMessage()
         {
             if (string.IsNullOrWhiteSpace(Message))
@@ -98,10 +91,12 @@ namespace ConsoleClient.ViewModel
 
             try
             {
+                Console.WriteLine("Enter message:");
                 _server.SendMessageToServer(Message);
                 Messages.Add($"You: {Message}");
                 Console.WriteLine($"Sent: {Message}");
                 Message = string.Empty;
+                // Application.Current.Dispatcher.Invoke(() => Messages.Add($"You: {Message}"));
             }
             catch (Exception ex)
             {

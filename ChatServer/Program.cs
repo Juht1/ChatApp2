@@ -1,27 +1,24 @@
-﻿using ChatClient.Net.IO;
-using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
+using ChatServer.Net.IO;
 
-namespace ChatClient
+namespace ChatServer
 {
-    class Program
+    internal class Program
     {
         static List<Client> _users;
         static TcpListener _listener;
         static void Main(string[] args)
         {
             _users = new List<Client>();
-            _listener = new TcpListener(IPAddress.Parse("chatserver"), 7891);
+            _listener = new TcpListener(IPAddress.Any, 7891);
             _listener.Start();
-
             while (true)
             {
                 var client = new Client(_listener.AcceptTcpClient());
                 _users.Add(client);
-
-                /* Broadcast the connection to everyone on the server */
                 BroadcastConnection();
+
             }
         }
 
@@ -33,8 +30,8 @@ namespace ChatClient
                 {
                     var broadcastPacket = new PacketBuilder();
                     broadcastPacket.WriteOpCode(1);
-                    broadcastPacket.WriteString(usr.Username);
-                    broadcastPacket.WriteString(usr.UID.ToString());
+                    broadcastPacket.WriteMessage(usr.Username);
+                    broadcastPacket.WriteMessage(usr.UID.ToString());
                     user.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
                 }
             }
@@ -46,23 +43,24 @@ namespace ChatClient
             {
                 var msgPacket = new PacketBuilder();
                 msgPacket.WriteOpCode(5);
-                msgPacket.WriteString(message);
+                msgPacket.WriteMessage(message);
+
                 user.ClientSocket.Client.Send(msgPacket.GetPacketBytes());
             }
         }
         public static void BroadcastDisconnect(string uid)
         {
-            var disconnectedUser = _users.Where(x => x.UID.ToString() == uid).FirstOrDefault();
-            _users.Remove(disconnectedUser);
+            var disconnecteUser = _users.FirstOrDefault(x => x.UID.ToString() == uid);
+            _users.Remove(disconnecteUser);
             foreach (var user in _users)
             {
                 var broadcastPacket = new PacketBuilder();
                 broadcastPacket.WriteOpCode(10);
-                broadcastPacket.WriteString(uid);
+                broadcastPacket.WriteMessage(uid);
                 user.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
-            }
 
-            BroadcastMessage($"[{disconnectedUser.Username}] Disconnected!");
+            }
+            BroadcastMessage($"[{disconnecteUser.Username}] Disconnected!");
         }
     }
 }

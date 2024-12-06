@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatClient.Net.IO
+namespace ChatServer.Net.IO
 {
     class PacketReader : BinaryReader
     {

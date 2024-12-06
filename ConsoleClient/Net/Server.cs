@@ -26,7 +26,7 @@ namespace ConsoleClient.Net
         {
             if (!_client.Connected)
             {
-                _client.Connect("127.0.0.1", 7891);
+                _client.Connect("ChatServer", 7891);
                 PacketReader = new PacketReader(_client.GetStream());
 
                 if (!string.IsNullOrEmpty(username))
