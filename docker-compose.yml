@@ -9,9 +9,9 @@ services:
       - "7891:7891"
     networks:
       - chat-network
-    container_name: chatserver  
+    container_name: chatserver
 
-  consoleclient: 
+  consoleclient1:
     build:
       context: ./ConsoleClient
       dockerfile: Dockerfile
@@ -26,7 +26,24 @@ services:
     environment:
       - USER_ID=user_1
     restart: unless-stopped
-    container_name: consoleclient 
+
+  consoleclient2:
+    build:
+      context: ./ConsoleClient
+      dockerfile: Dockerfile
+    ports:
+      - "7893:7891"
+    networks:
+      - chat-network
+    depends_on:
+      - chatserver
+    stdin_open: true
+    tty: true
+    environment:
+      - USER_ID=user_2
+    restart: unless-stopped
+
+
 
 networks:
   chat-network:

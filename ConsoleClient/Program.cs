@@ -9,7 +9,7 @@ namespace ConsoleClient
         {
             Console.Write("Enter your username: ");
             var name = Console.ReadLine();
-
+            var input = new MainViewModel(name);
             MainViewModel mainViewModel = new MainViewModel(name);
 
             Console.WriteLine("You can start sending messages. Type 'exit' to quit.");
